@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>用户管理</title>
+<link rel="stylesheet" href="${rc.contextPath}/statics/css/bootstrap.min.css">
+<link rel="stylesheet" href="${rc.contextPath}/statics/css/font-awesome.min.css">
+<link rel="stylesheet" href="${rc.contextPath}/statics/css/AdminLTE.min.css">
+<link rel="stylesheet" href="${rc.contextPath}/statics/css/all-skins.min.css">
+<link rel="stylesheet" href="${rc.contextPath}/statics/css/main.css">
+<link rel="stylesheet" href="${rc.contextPath}/statics/plugins/jqgrid/ui.jqgrid-bootstrap.css">
+<link rel="stylesheet" href="${rc.contextPath}/statics/plugins/ztree/css/metroStyle/metroStyle.css">
+</head>
+<body>
+<div id="rrapp" v-cloak>
+	<div v-show="showList">
+		<div class="grid-btn">
+			<a class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</a>
+			<a class="btn btn-primary" @click="update"><i class="fa fa-pencil-square-o"></i>&nbsp;修改</a>
+			<a class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
+		</div>
+	    <table id="jqGrid"></table>
+	    <div id="jqGridPager"></div>
+    </div>
+    
+    <div v-show="!showList" class="panel panel-default">
+		<div class="panel-heading">用户管理</div>
+		<form class="form-horizontal">
+											<div class="form-group">
+			   	<div class="col-sm-2 control-label">姓名</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="tUser.name" placeholder="姓名"/>
+			    </div>
+			</div>
+									<div class="form-group">
+			   	<div class="col-sm-2 control-label">地址</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="tUser.address" placeholder="地址"/>
+			    </div>
+			</div>
+									<div class="form-group">
+			   	<div class="col-sm-2 control-label">联系方式</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="tUser.phone" placeholder="联系方式"/>
+			    </div>
+			</div>
+									<div class="form-group">
+			   	<div class="col-sm-2 control-label">出生日期</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="tUser.birthday" placeholder="出生日期"/>
+			    </div>
+			</div>
+							<div class="form-group">
+				<div class="col-sm-2 control-label"></div> 
+				<input type="button" class="btn btn-primary" @click="saveOrUpdate" value="确定"/>
+				&nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
+			</div>
+		</form>
+	</div>
+</div>
+
+<script src="${rc.contextPath}/statics/libs/jquery.min.js"></script>
+<script src="${rc.contextPath}/statics/libs/vue.min.js"></script>
+<script src="${rc.contextPath}/statics/libs/router.js"></script>
+<script src="${rc.contextPath}/statics/libs/bootstrap.min.js"></script>
+<script src="${rc.contextPath}/statics/libs/jquery.slimscroll.min.js"></script>
+<script src="${rc.contextPath}/statics/libs/fastclick.min.js"></script>
+<script src="${rc.contextPath}/statics/libs/app.js"></script>
+<script src="${rc.contextPath}/statics/plugins/layer/layer.js"></script>
+<script src="${rc.contextPath}/statics/plugins/jqgrid/grid.locale-cn.js"></script>
+<script src="${rc.contextPath}/statics/plugins/jqgrid/jquery.jqGrid.min.js"></script>
+<script src="${rc.contextPath}/statics/plugins/ztree/jquery.ztree.all.min.js"></script>
+<script src="${rc.contextPath}/js/tuser.js?_${date.systemTime}"></script>
+<script src="${rc.contextPath}/js/common.js"></script>
+</body>
+</html>

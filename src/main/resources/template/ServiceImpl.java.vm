@@ -1,0 +1,16 @@
+package ${package}.service.impl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import ${package}.base.BaseServiceImpl;
+import ${package}.entity.${className}Entity;
+import ${package}.dao.${className}Dao;
+import ${package}.service.${className}Service;
+
+@Service("${classname}Service")
+public class ${className}ServiceImpl  extends BaseServiceImpl<${className}Entity> implements ${className}Service {
+
+	@Autowired
+	private ${className}Dao ${classname}Dao;
+}

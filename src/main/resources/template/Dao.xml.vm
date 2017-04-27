@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="${package}.dao.${className}Dao">
+
+	<cache eviction="FIFO" flushInterval="60000" size="512" readOnly="true"/>
+	 
+	<resultMap id="${className}Result" type="${package}.entity.${className}Entity">
+        #foreach($column in $columns)
+#if($column.columnName != $pk.columnName || $pk.extra != 'auto_increment')
+		<result column="$column.columnName" property="$column.attrname" /> 		
+#end			
+#end
+    </resultMap>
+	 
+	<insert id="save" parameterType="${package}.entity.${className}Entity"#if($pk.extra == 'auto_increment') useGeneratedKeys="true" keyProperty="$pk.attrname"#end>
+		insert into ${tableName}
+		(
+#foreach($column in $columns)
+#if($column.columnName != $pk.columnName || $pk.extra != 'auto_increment')
+			`$column.columnName`#if($velocityCount != $columns.size()), #end
+			
+#end			
+#end
+		)
+		values
+		(
+#foreach($column in $columns)
+#if($column.columnName != $pk.columnName || $pk.extra != 'auto_increment')
+			#{$column.attrname}#if($velocityCount != $columns.size()), #end
+			
+#end			
+#end
+		)
+	</insert>
+	
+	<insert id="saveBatch" parameterType="java.util.List">
+  		insert into ${tableName}
+		(
+#foreach($column in $columns)
+#if($column.columnName != $pk.columnName || $pk.extra != 'auto_increment')
+			`$column.columnName`#if($velocityCount != $columns.size()), #end
+			
+#end			
+#end
+		)
+		values
+  		<foreach collection="list" item="item" index="index" separator=",">
+		(
+#foreach($column in $columns)
+#if($column.columnName != $pk.columnName || $pk.extra != 'auto_increment')
+			#{item.$column.attrname}#if($velocityCount != $columns.size()), #end
+			
+#end			
+#end
+		)
+		</foreach>
+  	</insert>
+	
+	<select id="delete" parameterType="Long">
+		delete from ${tableName} where `${pk.columnName}` = #{value}
+	</select>
+	
+	<delete id="deleteBatch">
+		delete from ${tableName} where `${pk.columnName}` in 
+		<foreach item="${pk.attrname}" collection="array" open="(" separator="," close=")">
+			#{${pk.attrname}}
+		</foreach>
+	</delete>
+	
+	<update id="update" parameterType="${package}.entity.${className}Entity">
+		update ${tableName} 
+		<set>
+#foreach($column in $columns)
+#if($column.columnName != $pk.columnName)
+			<if test="$column.attrname != null">`$column.columnName` = #{$column.attrname}#if($velocityCount != $columns.size()), #end</if>
+#end
+#end
+		</set>
+		where `${pk.columnName}` = #{${pk.attrname}}
+	</update>
+
+	<select id="getById" parameterType="Long" resultMap="${className}Result">
+		select * from ${tableName} where `${pk.columnName}` = #{value}
+	</select>
+	
+	<select id="getByIds" parameterType="Long[]" resultMap="${className}Result">
+		select * from ${tableName} where `${pk.columnName}` in
+		<foreach collection="array" index="index" item="item" open="(" separator="," close=")">  
+	    	#{item}   
+	    </foreach>  
+	</select>
+	
+	<select id="findAll" parameterType="${package}.entity.${className}Entity" resultMap="${className}Result">
+        select * from ${tableName}
+        <where> 
+		   #foreach($column in $columns)
+#if($column.columnName != $pk.columnName)
+			<if test="$column.attrname != null"> AND `$column.columnName` = #{$column.attrname}</if>
+#end
+#end
+	    </where>
+    </select>
+	
+	<select id="getPageBean" parameterType="${package}.entity.${className}Entity" resultMap="${className}Result">
+        select * from ${tableName}
+        <where> 
+		   #foreach($column in $columns)
+#if($column.columnName != $pk.columnName)
+			<if test="entity!= null and entity.$column.attrname != null"> AND `$column.columnName` = #{entity.$column.attrname}</if>
+#end
+#end
+	    </where>
+		<if test="pageNum != 0 or pageSize != 0">
+			limit #{pageNum}, #{pageSize}
+		</if>
+	</select>
+
+</mapper>

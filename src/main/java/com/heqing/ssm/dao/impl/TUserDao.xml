@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.heqing.ssm.dao.TUserDao">
+
+	<cache eviction="FIFO" flushInterval="60000" size="512" readOnly="true"/>
+	 
+	<resultMap id="TUserResult" type="com.heqing.ssm.entity.TUserEntity">
+        		<result column="_userId" property="userid" /> 		
+		<result column="_name" property="name" /> 		
+		<result column="_address" property="address" /> 		
+		<result column="_phone" property="phone" /> 		
+		<result column="_birthday" property="birthday" /> 		
+    </resultMap>
+	 
+	<insert id="save" parameterType="com.heqing.ssm.entity.TUserEntity">
+		insert into t_user
+		(
+			`_userId`, 			
+			`_name`, 			
+			`_address`, 			
+			`_phone`, 			
+			`_birthday`			
+		)
+		values
+		(
+			#{userid}, 			
+			#{name}, 			
+			#{address}, 			
+			#{phone}, 			
+			#{birthday}			
+		)
+	</insert>
+	
+	<insert id="saveBatch" parameterType="java.util.List">
+  		insert into t_user
+		(
+			`_userId`, 			
+			`_name`, 			
+			`_address`, 			
+			`_phone`, 			
+			`_birthday`			
+		)
+		values
+  		<foreach collection="list" item="item" index="index" separator=",">
+		(
+			#{item.userid}, 			
+			#{item.name}, 			
+			#{item.address}, 			
+			#{item.phone}, 			
+			#{item.birthday}			
+		)
+		</foreach>
+  	</insert>
+	
+	<select id="delete" parameterType="Long">
+		delete from t_user where `_userId` = #{value}
+	</select>
+	
+	<delete id="deleteBatch">
+		delete from t_user where `_userId` in 
+		<foreach item="userid" collection="array" open="(" separator="," close=")">
+			#{userid}
+		</foreach>
+	</delete>
+	
+	<update id="update" parameterType="com.heqing.ssm.entity.TUserEntity">
+		update t_user 
+		<set>
+			<if test="name != null">`_name` = #{name}, </if>
+			<if test="address != null">`_address` = #{address}, </if>
+			<if test="phone != null">`_phone` = #{phone}, </if>
+			<if test="birthday != null">`_birthday` = #{birthday}</if>
+		</set>
+		where `_userId` = #{userid}
+	</update>
+
+	<select id="getById" parameterType="Long" resultMap="TUserResult">
+		select * from t_user where `_userId` = #{value}
+	</select>
+	
+	<select id="getByIds" parameterType="Long[]" resultMap="TUserResult">
+		select * from t_user where `_userId` in
+		<foreach collection="array" index="index" item="item" open="(" separator="," close=")">  
+	    	#{item}   
+	    </foreach>  
+	</select>
+	
+	<select id="findAll" parameterType="com.heqing.ssm.entity.TUserEntity" resultMap="TUserResult">
+        select * from t_user
+        <where> 
+		   			<if test="name != null"> AND `_name` = #{name}</if>
+			<if test="address != null"> AND `_address` = #{address}</if>
+			<if test="phone != null"> AND `_phone` = #{phone}</if>
+			<if test="birthday != null"> AND `_birthday` = #{birthday}</if>
+	    </where>
+    </select>
+	
+	<select id="getPageBean" parameterType="com.heqing.ssm.entity.TUserEntity" resultMap="TUserResult">
+        select * from t_user
+        <where> 
+		   			<if test="entity!= null and entity.name != null"> AND `_name` = #{entity.name}</if>
+			<if test="entity!= null and entity.address != null"> AND `_address` = #{entity.address}</if>
+			<if test="entity!= null and entity.phone != null"> AND `_phone` = #{entity.phone}</if>
+			<if test="entity!= null and entity.birthday != null"> AND `_birthday` = #{entity.birthday}</if>
+	    </where>
+		<if test="pageNum != 0 or pageSize != 0">
+			limit #{pageNum}, #{pageSize}
+		</if>
+	</select>
+
+</mapper>

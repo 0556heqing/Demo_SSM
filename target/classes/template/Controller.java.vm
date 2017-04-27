@@ -1,0 +1,91 @@
+package ${package}.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.stereotype.Controller;
+
+import ${package}.entity.PageBean;
+import ${package}.entity.${className}Entity;
+import ${package}.service.${className}Service;
+import ${package}.utils.ResultUtil;
+
+/**
+ * ${comments}
+ * 
+ * @author ${author}
+ * @email ${email}
+ * @date ${datetime}
+ */
+@Controller
+@RequestMapping("/${pathName}")
+public class ${className}Controller {
+
+	@Autowired
+	private ${className}Service ${classname}Service;
+	
+	@RequestMapping("/${pathName}.html")
+	public String list(){
+		return "${pathName}.html";
+	}
+	
+	/**
+	 * 保存
+	 */
+	@ResponseBody
+	@RequestMapping("/save")
+	public ResultUtil save(@RequestBody ${className}Entity ${classname}){
+		${classname}Service.save(${classname});
+		return ResultUtil.ok();
+	}
+	
+	/**
+	 * 修改
+	 */
+	@ResponseBody
+	@RequestMapping("/update")
+	public ResultUtil update(@RequestBody ${className}Entity ${classname}){
+		${classname}Service.update(${classname});
+		return ResultUtil.ok();
+	}
+	
+	/**
+	 * 信息
+	 */
+	@ResponseBody
+	@RequestMapping("/info/{${pk.attrname}}")
+	public ResultUtil info(@PathVariable("${pk.attrname}") ${pk.attrType} ${pk.attrname}){
+		${className}Entity ${classname} = ${classname}Service.getById(${pk.attrname});
+		return ResultUtil.ok().put("${classname}", ${classname});
+	}
+	
+	/**
+	 * 列表
+	 */
+	@ResponseBody
+	@RequestMapping("/list")
+	public ResultUtil list(Integer page, Integer limit){
+		if(page==null) page = 1;
+		if(limit==null) limit = 10;
+		//查询列表数据
+		List<${className}Entity> ${classname}List = ${classname}Service.getPageBean((page - 1) * limit, limit);
+		int total = ${classname}Service.findAll().size();
+		PageBean pageUtil = new PageBean(page, limit, ${classname}List, total);
+		return ResultUtil.ok().put("page", pageUtil);
+	}
+	
+	/**
+	 * 删除
+	 */
+	@ResponseBody
+	@RequestMapping("/delete")
+	public ResultUtil delete(@RequestBody ${pk.attrType}[] ${pk.attrname}s){
+		${classname}Service.deleteBatch(${pk.attrname}s);
+		return ResultUtil.ok();
+	}
+	
+}
